@@ -22,7 +22,6 @@ public class CourseAddRemoveTests {
         mockWaitList = (List<Student>) mock(List.class);
         testCourse.setEnrolledStudents(mockEnrollment);
         testCourse.setWaitListedStudents(mockWaitList);
-
         mockStudent = mock(Student.class);
     }
 

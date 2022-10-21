@@ -2,47 +2,43 @@ package edu.virginia.cs.hw4;
 
 import org.junit.jupiter.api.*;
 
+
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+// Got help from Dan's office hours for test_addCourseGrade, line 34
 
 public class studentTests {
-    private Course testCourse;
+    private Course mockCourse;
     private List<Student> mockEnrollment, mockWaitList;
     private Student mockStudent;
+    private Map<Course,Grade> mockCourseHistory = new HashMap<>();
+    private Transcript studentTranscript;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
     public void setUp() {
-        testCourse = getTestCourse();
-        mockEnrollment = (List<Student>) mock(List.class);
-        mockWaitList = (List<Student>) mock(List.class);
-        testCourse.setEnrolledStudents(mockEnrollment);
-        testCourse.setWaitListedStudents(mockWaitList);
+        mockCourse = mock(Course.class);
+        mockCourseHistory.put(mockCourse,Grade.B);
+        studentTranscript = new Transcript(mockStudent, mockCourseHistory);
+        mockStudent = new Student(12345, "name", "email", studentTranscript);
 
-        mockStudent = mock(Student.class);
     }
-
-    private Course getTestCourse() {
-        return new Course(18802,
-                "Software Development Essentials", "CS",
-                3140, 1, 3, "Paul McBurney",
-                "pm8fc@virginia.edu", 175, 99,
-                List.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
-                12, 30, 75,"Gilmer 301",
-                new ArrayList<>());
-    }
-
-
     @Test
     public void test_addCourseGrade(){
-
+        when(mockCourse.getCreditHours()).thenReturn(3);
+        mockStudent.addCourseGrade(mockCourse,Grade.B);
+        assertEquals(3.0, mockStudent.getGPA());
     }
 
     @Test
-    public void test_hasStudentTakenCouse(){
+    public void test_hasStudentTakenCourse(){
 
     }
 
