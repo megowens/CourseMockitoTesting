@@ -6,10 +6,9 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class part3Testing {
+public class studentTests {
     private Course testCourse;
     private List<Student> mockEnrollment, mockWaitList;
     private Student mockStudent;
