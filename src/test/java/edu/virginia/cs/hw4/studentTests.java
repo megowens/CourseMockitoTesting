@@ -19,6 +19,8 @@ public class studentTests {
     private Student student;
     private Map<Course,Grade> studentCourseHistory = new HashMap<>();
     private Transcript studentTranscript;
+    private Prerequisite prereq;
+    private Student mockStudent;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
@@ -27,7 +29,8 @@ public class studentTests {
         studentCourseHistory.put(mockCourse,Grade.B);
         studentTranscript = new Transcript(student, studentCourseHistory);
         student = new Student(12345, "name", "email", studentTranscript);
-
+        prereq = new Prerequisite(mockCourse, Grade.C);
+        mockStudent = mock(Student.class);
     }
 
     @Test
@@ -50,7 +53,9 @@ public class studentTests {
 
     @Test
     public void test_meetsPrerequisite(){
-
+        when(mockStudent.hasStudentTakenCourse(mockCourse)).thenReturn(false);
+        assertEquals(false, mockStudent.meetsPrerequisite(prereq));
+        //assertTrue(student.meetsPrerequisite(prereq));
     }
 
     @Test
