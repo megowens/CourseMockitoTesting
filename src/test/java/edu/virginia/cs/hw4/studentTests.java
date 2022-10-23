@@ -18,6 +18,7 @@ public class studentTests {
     private List<Student> mockEnrollment, mockWaitList;
     private Student student;
     private Map<Course,Grade> studentCourseHistory = new HashMap<>();
+//    private Map<Course,Grade> studentCourseHistory;
     private Transcript studentTranscript;
     private Prerequisite prereq;
     private Student mockStudent;
@@ -26,6 +27,7 @@ public class studentTests {
     @SuppressWarnings("unchecked")
     public void setUp() {
         mockCourse = mock(Course.class);
+//        studentCourseHistory = mock(Map.class);
         studentCourseHistory.put(mockCourse,Grade.B);
         studentTranscript = new Transcript(student, studentCourseHistory);
         student = new Student(12345, "name", "email", studentTranscript);
@@ -42,12 +44,12 @@ public class studentTests {
 
     @Test
     public void test_hasStudentTakenCourse(){
-//        when()
         assertTrue(student.hasStudentTakenCourse(mockCourse));
     }
 
     @Test
     public void test_getCourseGrade(){
+        when(student.hasStudentTakenCourse(mockCourse)).thenReturn(Boolean.TRUE);
         assertEquals(Grade.B, student.getCourseGrade(mockCourse));
     }
 
@@ -60,7 +62,8 @@ public class studentTests {
 
     @Test
     public void test_getGPA(){
-
+        when(mockCourse.getCreditHours()).thenReturn(3);
+        assertEquals(3.0, student.getGPA());
     }
 
 }
