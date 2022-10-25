@@ -1,5 +1,7 @@
 package edu.virginia.cs.hw4;
 
+import java.util.Set;
+
 public class Student {
     private int studentNumber;
     private String name;
@@ -50,12 +52,13 @@ public class Student {
     }
 
     public boolean hasStudentTakenCourse(Course course) {
+        //MEG IS FIXING THIS TO ACCOUNT FOR DIFFERENT SECTIONS
         return transcript.courseHistory.containsKey(course);
     }
 
     public Grade getCourseGrade(Course course) {
         if (hasStudentTakenCourse(course)) {
-            transcript.courseHistory.get(course);
+            return transcript.courseHistory.get(course);
         }
         throw new IllegalArgumentException("ERROR: Student has no grade for " + course);
     }
@@ -66,6 +69,7 @@ public class Student {
         }
         Grade studentGrade = transcript.courseHistory.get(prerequisite.course);
         return studentGrade.gpa >= prerequisite.minimumGrade.gpa;
+
     }
 
     public double getGPA() {
