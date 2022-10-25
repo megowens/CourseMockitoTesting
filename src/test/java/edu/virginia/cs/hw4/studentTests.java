@@ -10,17 +10,16 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-// Got help from Dan's office hours for test_addCourseGrade, line 40
-// Also got help from Santiago, Leigh, and Celeste, will specify later
+// Got help from Celeste's office hours for test_addCourseGrade, line 35
+// Got help from Leigh's office hours for test_meetsPrerequisite and test_getGPA, lines 64 & 82
+// Got help from Santiago's office hours for test_hasStudentTakenCourse and test_getCourseGrade, lines 41 & 52
 
 public class studentTests {
-    private Course mockCourse, mockCourse2;
-    private Student student, testStudent;
-    private Map<Course,Grade> studentCourseHistory = new HashMap<>();
+    private Course mockCourse;
+    private Student testStudent;
     private Map<Course,Grade> mockCourseHistory;
-    private Transcript studentTranscript, testTranscript;
+    private Transcript testTranscript;
     private Prerequisite prereq;
-    private Student mockStudent;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
@@ -30,7 +29,6 @@ public class studentTests {
         testTranscript = new Transcript(testStudent, mockCourseHistory);
         testStudent = new Student(12345, "name", "email", testTranscript);
         prereq = new Prerequisite(mockCourse, Grade.C);
-        mockStudent = mock(Student.class);
     }
 
     @Test
@@ -47,7 +45,7 @@ public class studentTests {
     @Test
     public void test_hasStudentTakenCourseFalse(){
         when(mockCourseHistory.containsKey(mockCourse)).thenReturn(false);
-        assertFalse(testStudent.hasStudentTakenCourse(mockCourse2));
+        assertFalse(testStudent.hasStudentTakenCourse(mockCourse));
     }
 
     @Test
@@ -55,6 +53,11 @@ public class studentTests {
         when(mockCourseHistory.containsKey(mockCourse)).thenReturn(true);
         when(mockCourseHistory.get(mockCourse)).thenReturn(Grade.B_MINUS);
         assertEquals(Grade.B_MINUS, testStudent.getCourseGrade(mockCourse));
+    }
+    @Test
+    public void test_getCourseGradeNotTaken(){
+        when(mockCourseHistory.containsKey(mockCourse)).thenReturn(false);
+        assertThrows(IllegalArgumentException.class, () -> testStudent.getCourseGrade(mockCourse));
     }
 
     @Test
@@ -82,6 +85,11 @@ public class studentTests {
         when(mockCourseHistory.get(mockCourse)).thenReturn(Grade.B_MINUS);
         when(mockCourse.getCreditHours()).thenReturn(3);
         assertEquals(2.7, testStudent.getGPA(),1e-4);
+    }
+    @Test
+    public void test_noGPA(){
+        when(mockCourseHistory.isEmpty()).thenReturn(true);
+        assertThrows(IllegalStateException.class, () -> testStudent.getGPA());
     }
 
 }
