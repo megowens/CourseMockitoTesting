@@ -34,23 +34,17 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean areCoursesConflicted(Course first, Course second) {
-        if (first.getMeetingDays() == second.getMeetingDays()) {
+        //*******Fix to account for meeting days being a list*******//
+        if (first.getMeetingDays().equals(second.getMeetingDays())) {
             int firstStart = getCourseTime(first).get(0);
             int firstEnd = getCourseTime(first).get(1);
             int secondStart = getCourseTime(second).get(0);
             int secondEnd = getCourseTime(second).get(1);
-            if (firstStart < secondStart && secondStart < firstEnd) {
-                return true;
-            }
-            else if (secondStart < firstStart && firstStart < secondEnd) {
-                return true;
-            }
-            else if (firstStart < secondEnd && secondEnd < firstEnd){
-                return true;
-            }
-            else if (secondStart < firstEnd && firstEnd < secondEnd) {
-                return true;
-            }
+
+            if (firstStart <= secondStart && secondStart <= firstEnd) {return true;}
+            else if (secondStart <= firstStart && firstStart <= secondEnd) {return true;}
+            else if (firstStart <= secondEnd && secondEnd <= firstEnd){return true;}
+            else if (secondStart <= firstEnd && firstEnd <= secondEnd) {return true;}
             else {return false;}
         }
         return false;
@@ -71,7 +65,7 @@ public class RegistrationImpl implements Registration {
     public boolean hasStudentMeetsPrerequisites(Student student, List<Prerequisite> prerequisites) {
         for(Prerequisite prereq : prerequisites) {
             if(!student.meetsPrerequisite(prereq)){
-                return false
+                return false;
             }
         }
         return true;

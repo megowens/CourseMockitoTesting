@@ -58,13 +58,34 @@ public class RegTests {
         assertFalse(registration.isWaitListFull(mockCourse));
     }
     @Test
-    public void test_areCoursesConflicted(){
+    public void test_areCoursesConflictedSameTimes(){
         when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY));
         when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY));
         when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
-        when(mockCourse.getMeetingDurationMinutes()).thenReturn(60);
+        when(mockCourse.getMeetingDurationMinutes()).thenReturn(75);
         when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
+        when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse2.getMeetingDurationMinutes()).thenReturn(75);
+        when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
         assertTrue(registration.areCoursesConflicted(mockCourse,mockCourse2));
+    }
+    @Test
+    public void test_areCoursesNotConflicted(){
+        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY,DayOfWeek.WEDNESDAY));
+        when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY,DayOfWeek.THURSDAY));
+        when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse.getMeetingDurationMinutes()).thenReturn(75);
+        when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
+        when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse2.getMeetingDurationMinutes()).thenReturn(75);
+        when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
+        assertFalse(registration.areCoursesConflicted(mockCourse,mockCourse2));
+    }
+    @Test
+    public void test_areCoursesConflictedOneDaySame(){
+    }
+    @Test
+    public void test_areCoursesConflictedStartAtEnd(){
     }
     @Test
     public void test_hasConflictWithStudentSchedule(){
