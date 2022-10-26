@@ -73,20 +73,55 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public RegistrationResult registerStudentForCourse(Student student, Course course) {
+        if(course.getEnrollmentStatus() == Course.EnrollmentStatus.CLOSED) {return RegistrationResult.COURSE_CLOSED;}
+        if(isEnrollmentFull(course) && isWaitListFull(course)) {return RegistrationResult.COURSE_FULL;}
+        if(hasConflictWithStudentSchedule(course, student)) {return RegistrationResult.SCHEDULE_CONFLICT;}
+        if(!hasStudentMeetsPrerequisites(student, course.getPrerequisites())){return RegistrationResult.PREREQUISITE_NOT_MET;}
+
+        if(!isEnrollmentFull(course)) {
+            course.addStudentToEnrolled(student);
+            if(isEnrollmentFull(course)) {
+                course.setEnrollmentStatus(Course.EnrollmentStatus.WAIT_LIST);
+            }
+            return RegistrationResult.ENROLLED;
+        }
+        else if(!isWaitListFull(course)){
+            course.addStudentToWaitList(student);
+            if(isWaitListFull(course)){
+                course.setEnrollmentStatus(Course.EnrollmentStatus.CLOSED);
+            }
+            return RegistrationResult.WAIT_LISTED;
+        }
+
         return null;
-    }
-    public enum registrationStatus {
-        COURSE_CLOSED,
-        COURSE_FULL,
-        SCHEDULE_CONFLICT,
-        PREREQUISITE_NOT_MET,
-        ENROLLED,
-        WAITLISTED;
     }
 
     @Override
     public void dropCourse(Student student, Course course) {
-
+        if(!course.isStudentEnrolled(student) && !course.isStudentWaitListed(student)){
+            throw new IllegalArgumentException("Student is neither enrolled in course nor on waitlist");
+        }
+        if(course.isStudentEnrolled(student)){
+            course.removeStudentFromEnrolled(student);
+            if(course.getEnrollmentStatus() == Course.EnrollmentStatus.WAIT_LIST) {
+                if(course.isWaitListEmpty()) {
+                    course.setEnrollmentStatus(Course.EnrollmentStatus.OPEN);
+                }
+                else {
+                    course.addStudentToEnrolled(course.getFirstStudentOnWaitList());
+                }
+            }
+            else if(course.getEnrollmentStatus() == Course.EnrollmentStatus.CLOSED){
+                course.addStudentToEnrolled(course.getFirstStudentOnWaitList());
+                course.setEnrollmentStatus(Course.EnrollmentStatus.WAIT_LIST);
+            }
+        }
+        else if(course.isStudentWaitListed(student)){
+            course.removeStudentFromWaitList(student);
+            if(course.getEnrollmentStatus() == Course.EnrollmentStatus.CLOSED) {
+                course.setEnrollmentStatus(Course.EnrollmentStatus.WAIT_LIST);
+            }
+        }
     }
 
     private ArrayList<Integer> getCourseTime(Course course) {
