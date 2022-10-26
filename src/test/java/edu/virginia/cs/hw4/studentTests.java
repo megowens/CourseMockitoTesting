@@ -1,6 +1,7 @@
 package edu.virginia.cs.hw4;
 
 import org.junit.jupiter.api.*;
+import org.mockito.internal.matchers.Null;
 
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import static org.mockito.Mockito.*;
 
 // Got help from Celeste's office hours for test_addCourseGrade, line 35
 // Got help from Leigh's office hours for test_meetsPrerequisite and test_getGPA, lines 64 & 82
-// Got help from Santiago's office hours for test_hasStudentTakenCourse and test_getCourseGrade, lines 41 & 52
+// Got help from Santiago's office hours for test_getCourseGrade, line 52
 
 public class studentTests {
     private Course mockCourse;
@@ -39,41 +40,49 @@ public class studentTests {
 
     @Test
     public void test_hasStudentTakenCourse(){
-        when(mockCourseHistory.containsKey(mockCourse)).thenReturn(true);
+        when(mockCourseHistory.keySet()).thenReturn(Set.of(mockCourse));
+        when(mockCourse.getDepartment()).thenReturn("CS");
+        when(mockCourse.getCatalogNumber()).thenReturn(3140);
         assertTrue(testStudent.hasStudentTakenCourse(mockCourse));
     }
     @Test
     public void test_hasStudentTakenCourseFalse(){
-        when(mockCourseHistory.containsKey(mockCourse)).thenReturn(false);
+        when(mockCourseHistory.keySet()).thenReturn(Set.of());
         assertFalse(testStudent.hasStudentTakenCourse(mockCourse));
     }
 
     @Test
     public void test_getCourseGrade(){
-        when(mockCourseHistory.containsKey(mockCourse)).thenReturn(true);
+        when(mockCourseHistory.keySet()).thenReturn(Set.of(mockCourse));
+        when(mockCourse.getDepartment()).thenReturn("CS");
+        when(mockCourse.getCatalogNumber()).thenReturn(3140);
         when(mockCourseHistory.get(mockCourse)).thenReturn(Grade.B_MINUS);
         assertEquals(Grade.B_MINUS, testStudent.getCourseGrade(mockCourse));
     }
     @Test
-    public void test_getCourseGradeNotTaken(){
+    public void test_getCourseGradeException(){
         when(mockCourseHistory.containsKey(mockCourse)).thenReturn(false);
         assertThrows(IllegalArgumentException.class, () -> testStudent.getCourseGrade(mockCourse));
     }
 
     @Test
     public void test_meetsPrerequisite(){
-        when(mockCourseHistory.containsKey(prereq.course)).thenReturn(true);
+        when(mockCourseHistory.keySet()).thenReturn(Set.of(prereq.course));
+        when(prereq.course.getDepartment()).thenReturn("CS");
+        when(prereq.course.getCatalogNumber()).thenReturn(3140);
         when(mockCourseHistory.get(prereq.course)).thenReturn(Grade.B_MINUS);
         assertTrue(testStudent.meetsPrerequisite(prereq));
     }
     @Test
     public void test_didntTakePrerequisite(){
-        when(mockCourseHistory.containsKey(prereq.course)).thenReturn(false);
+        when(mockCourseHistory.keySet()).thenReturn(Set.of());
         assertFalse(testStudent.meetsPrerequisite(prereq));
     }
     @Test
     public void test_doesntMeetPrerequisite(){
-        when(mockCourseHistory.containsKey(prereq.course)).thenReturn(true);
+        when(mockCourseHistory.keySet()).thenReturn(Set.of(prereq.course));
+        when(prereq.course.getDepartment()).thenReturn("CS");
+        when(prereq.course.getCatalogNumber()).thenReturn(3140);
         when(mockCourseHistory.get(prereq.course)).thenReturn(Grade.F);
         assertFalse(testStudent.meetsPrerequisite(prereq));
     }
@@ -87,7 +96,7 @@ public class studentTests {
         assertEquals(2.7, testStudent.getGPA(),1e-4);
     }
     @Test
-    public void test_noGPA(){
+    public void test_GPAException(){
         when(mockCourseHistory.isEmpty()).thenReturn(true);
         assertThrows(IllegalStateException.class, () -> testStudent.getGPA());
     }

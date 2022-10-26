@@ -52,8 +52,13 @@ public class Student {
     }
 
     public boolean hasStudentTakenCourse(Course course) {
-        //MEG IS FIXING THIS TO ACCOUNT FOR DIFFERENT SECTIONS
-        return transcript.courseHistory.containsKey(course);
+        Set<Course> takenCourses = transcript.courseHistory.keySet();
+        for(Course c : takenCourses){
+            if(c.getDepartment().equals(course.getDepartment())){
+                if(c.getCatalogNumber() == course.getCatalogNumber()){return true;}
+            }
+        }
+        return false;
     }
 
     public Grade getCourseGrade(Course course) {
