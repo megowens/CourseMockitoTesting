@@ -73,7 +73,7 @@ public class Student {
             return false;
         }
         Grade studentGrade = transcript.getCourse(prerequisite.course);
-        return studentGrade.gpa >= prerequisite.minimumGrade.gpa;
+        return studentGrade.gpa >= prerequisite.getMinGrade();
 
     }
 
@@ -100,6 +100,7 @@ public class Student {
         }
         return false;
     }
+
 
     @Override
     public int hashCode() {

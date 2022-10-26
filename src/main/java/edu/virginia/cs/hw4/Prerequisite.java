@@ -8,4 +8,7 @@ public class Prerequisite {
         this.course = course;
         this.minimumGrade = minimumGrade;
     }
+    public double getMinGrade() {
+        return minimumGrade.gpa;
+    }
 }
