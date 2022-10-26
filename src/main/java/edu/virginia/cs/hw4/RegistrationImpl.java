@@ -56,9 +56,17 @@ public class RegistrationImpl implements Registration {
             int secondEnd = getCourseTime(second).get(1);
             if (firstStart < secondStart && secondStart < firstEnd) {
                 return true;
-            } else if (secondStart < firstStart && firstStart < secondEnd) {
+            }
+            else if (secondStart < firstStart && firstStart < secondEnd) {
                 return true;
             }
+            else if (firstStart < secondEnd && secondEnd < firstEnd){
+                return true;
+            }
+            else if (secondStart < firstEnd && firstEnd < secondEnd) {
+                return true;
+            }
+            else {return false;}
         }
         return false;
     }
