@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 // Got help from Celeste's office hours for test_addCourseGrade, line 35
-// Got help from Leigh's office hours for test_meetsPrerequisite and test_getGPA, lines 64 & 82
-// Got help from Santiago's office hours for test_getCourseGrade, line 52
+// Got help from Leigh's office hours for test_meetsPrerequisite and test_getGPA, lines 69 & 91
+// Got help from Santiago's office hours for test_getCourseGrade, line 55
 
 public class studentTests {
     private Course mockCourse;
