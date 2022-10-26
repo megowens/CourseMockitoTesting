@@ -19,12 +19,12 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean isEnrollmentFull(Course course) {
-        return course.getEnrollmentCap() < course.getCurrentEnrollmentSize();
+        return course.getEnrollmentCap() <= course.getCurrentEnrollmentSize();
     }
 
     @Override
     public boolean isWaitListFull(Course course) {
-        return course.getWaitListCap() < course.getCurrentWaitListSize();
+        return course.getWaitListCap() <= course.getCurrentWaitListSize();
     }
 
     @Override
