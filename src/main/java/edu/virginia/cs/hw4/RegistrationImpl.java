@@ -35,17 +35,13 @@ public class RegistrationImpl implements Registration {
     @Override
     public boolean areCoursesConflicted(Course first, Course second) {
         //*******Fix to account for meeting days being a list*******//
-        if (first.getMeetingDays().equals(second.getMeetingDays())) {
+        if (classOnSameDay(first, second)) {
             int firstStart = getCourseTime(first).get(0);
             int firstEnd = getCourseTime(first).get(1);
             int secondStart = getCourseTime(second).get(0);
             int secondEnd = getCourseTime(second).get(1);
+            return conflictingTimes(firstStart, firstEnd, secondStart, secondEnd);
 
-            if (firstStart <= secondStart && secondStart <= firstEnd) {return true;}
-            else if (secondStart <= firstStart && firstStart <= secondEnd) {return true;}
-            else if (firstStart <= secondEnd && secondEnd <= firstEnd){return true;}
-            else if (secondStart <= firstEnd && firstEnd <= secondEnd) {return true;}
-            else {return false;}
         }
         return false;
     }
@@ -137,5 +133,20 @@ public class RegistrationImpl implements Registration {
         CourseTimes.add(courseStart);
         CourseTimes.add(courseEnd);
         return CourseTimes;
+    }
+    private boolean classOnSameDay(Course first, Course second){
+        for(Object day : first.getMeetingDays()){
+            for(Object secondDay : second.getMeetingDays()){
+                if(day.equals(secondDay)){return true;}
+            }
+        }
+        return false;
+    }
+    private boolean conflictingTimes(int firstStart, int firstEnd, int secondStart, int secondEnd){
+        if ((firstStart <= secondStart && secondStart <= firstEnd)) {return true;}
+        else if (secondStart <= firstStart && firstStart <= secondEnd) {return true;}
+        else if (firstStart <= secondEnd && secondEnd <= firstEnd){return true;}
+        else if (secondStart <= firstEnd && firstEnd <= secondEnd) {return true;}
+        return false;
     }
 }
