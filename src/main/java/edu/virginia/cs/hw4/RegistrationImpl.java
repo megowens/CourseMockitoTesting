@@ -19,32 +19,17 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean isEnrollmentFull(Course course) {
-        return course.getEnrollmentCap() < course.getCurrentEnrollmentSize();
+        return course.getEnrollmentCap() <= course.getCurrentEnrollmentSize();
     }
 
     @Override
     public boolean isWaitListFull(Course course) {
-        return course.getWaitListCap() < course.getCurrentWaitListSize();
+        return course.getWaitListCap() <= course.getCurrentWaitListSize();
     }
 
     @Override
     public Course.EnrollmentStatus getEnrollmentStatus(Course course) {
         return course.getEnrollmentStatus();
-    }
-
-    private ArrayList<Integer> getCourseTime(Course course) {
-        int courseEndMin = course.getMeetingStartTimeMinute() + course.getMeetingDurationMinutes();
-        int courseEndHour = course.getMeetingStartTimeHour();
-        if (courseEndMin >= 60) {
-            courseEndMin -= 60;
-            courseEndHour++;
-        }
-        int courseStart = course.getMeetingStartTimeHour() + course.getMeetingStartTimeMinute();
-        int courseEnd = courseEndHour + courseEndMin;
-        ArrayList<Integer> CourseTimes = new ArrayList<Integer>();
-        CourseTimes.add(courseStart);
-        CourseTimes.add(courseEnd);
-        return CourseTimes;
     }
 
     @Override
@@ -73,21 +58,55 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean hasConflictWithStudentSchedule(Course course, Student student) {
+        List<Course> schedule = coursecatalog.getCoursesEnrolledIn(student);
+        for(Course c : schedule) {
+            if(areCoursesConflicted(c, course)) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean hasStudentMeetsPrerequisites(Student student, List<Prerequisite> prerequisites) {
-        return false;
+        for(Prerequisite prereq : prerequisites) {
+            if(!student.meetsPrerequisite(prereq)){
+                return false
+            }
+        }
+        return true;
     }
 
     @Override
     public RegistrationResult registerStudentForCourse(Student student, Course course) {
         return null;
     }
+    public enum registrationStatus {
+        COURSE_CLOSED,
+        COURSE_FULL,
+        SCHEDULE_CONFLICT,
+        PREREQUISITE_NOT_MET,
+        ENROLLED,
+        WAITLISTED;
+    }
 
     @Override
     public void dropCourse(Student student, Course course) {
 
+    }
+
+    private ArrayList<Integer> getCourseTime(Course course) {
+        int courseEndMin = course.getMeetingStartTimeMinute() + course.getMeetingDurationMinutes();
+        int courseEndHour = course.getMeetingStartTimeHour();
+        if (courseEndMin >= 60) {
+            courseEndMin -= 60;
+            courseEndHour++;
+        }
+        int courseStart = (course.getMeetingStartTimeHour()*100) + course.getMeetingStartTimeMinute();
+        int courseEnd = (courseEndHour*100) + courseEndMin;
+        ArrayList<Integer> CourseTimes = new ArrayList<Integer>();
+        CourseTimes.add(courseStart);
+        CourseTimes.add(courseEnd);
+        return CourseTimes;
     }
 }
