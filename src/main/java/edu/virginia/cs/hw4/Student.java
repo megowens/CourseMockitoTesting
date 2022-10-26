@@ -48,11 +48,11 @@ public class Student {
     }
 
     public void addCourseGrade(Course course, Grade grade) {
-        transcript.courseHistory.put(course, grade);
+        transcript.addCourseGrade(course, grade);
     }
 
     public boolean hasStudentTakenCourse(Course course) {
-        Set<Course> takenCourses = transcript.courseHistory.keySet();
+        Set<Course> takenCourses = transcript.getKeySet();
         for(Course c : takenCourses){
             if(c.getDepartment().equals(course.getDepartment())){
                 if(c.getCatalogNumber() == course.getCatalogNumber()){return true;}
@@ -63,7 +63,7 @@ public class Student {
 
     public Grade getCourseGrade(Course course) {
         if (hasStudentTakenCourse(course)) {
-            return transcript.courseHistory.get(course);
+            return transcript.getCourse(course);
         }
         throw new IllegalArgumentException("ERROR: Student has no grade for " + course);
     }
@@ -72,19 +72,19 @@ public class Student {
         if (!hasStudentTakenCourse(prerequisite.course)) {
             return false;
         }
-        Grade studentGrade = transcript.courseHistory.get(prerequisite.course);
+        Grade studentGrade = transcript.getCourse(prerequisite.course);
         return studentGrade.gpa >= prerequisite.minimumGrade.gpa;
 
     }
 
     public double getGPA() {
-        if (transcript.courseHistory.isEmpty()) {
+        if (transcript.getKeySet().isEmpty()) {
             throw new IllegalStateException("No courses taken, cannot get GPA");
         }
         double totalGradePoints = 0.0;
         int creditsAttempted = 0;
-        for (Course course : transcript.courseHistory.keySet()) {
-            Grade grade = transcript.courseHistory.get(course);
+        for (Course course : transcript.getKeySet()) {
+            Grade grade = transcript.getCourse(course);
             int credits = course.getCreditHours();
             totalGradePoints += grade.gpa * credits;
             creditsAttempted += credits;

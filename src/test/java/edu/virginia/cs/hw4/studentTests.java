@@ -95,6 +95,7 @@ public class studentTests {
         when(mockCourse.getCreditHours()).thenReturn(3);
         assertEquals(2.7, testStudent.getGPA(),1e-4);
     }
+
     @Test
     public void test_GPAException(){
         when(mockCourseHistory.isEmpty()).thenReturn(true);
