@@ -16,6 +16,7 @@ public class RegTests {
     private RegistrationImpl registration = new RegistrationImpl();
     private Prerequisite prereq = new Prerequisite(mockCourse, Grade.C);
     private Registration mockReg;
+    private CourseCatalog mockCatalog;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
@@ -25,6 +26,7 @@ public class RegTests {
         mockStudent = mock(Student.class);
         mockStudent2 = mock(Student.class);
         mockReg = mock(Registration.class);
+        mockCatalog = mock(CourseCatalog.class);
     }
     @Test
     public void test_isEnrollmentFull(){
@@ -112,11 +114,38 @@ public class RegTests {
         when(mockCourse2.getMeetingStartTimeHour()).thenReturn(10);
         assertFalse(registration.areCoursesConflicted(mockCourse,mockCourse2));
     }
+
+    List<Course> exSchedule = new ArrayList<>();
+    public List<Course> getExSchedule(List<Course> courselist) {
+        courselist.add(mockCourse);
+        courselist.add(mockCourse2);
+        return courselist;
+    }
+    List<Course> testSchedule = getExSchedule(exSchedule);
+
     @Test
     public void test_hasConflictWithStudentSchedule(){
+       //answer was like don't need to test methods in registration, need to create objects that would conflict and feed them that info
+
+        //mock isn't propogating fully so like mockCourse isn't carried to the error causing function
+        //mock is like a box and getting an error bc we're asking for info it doesn't have
+
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(testSchedule);
+        mockCourse.setMeetingDays(List.of(DayOfWeek.MONDAY,DayOfWeek.TUESDAY));
+        mockCourse.setMeetingDays(List.of(DayOfWeek.TUESDAY));
+
+        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY,DayOfWeek.TUESDAY));
+        when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
+        when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse.getMeetingDurationMinutes()).thenReturn(75);
+        when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
+        when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse2.getMeetingDurationMinutes()).thenReturn(75);
+        when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
 
 
-
+        assertTrue(registration.hasConflictWithStudentSchedule(mockCourse, mockStudent));
     }
     Prerequisite prereq2 = new Prerequisite(mockCourse2, Grade.C);
     List<Prerequisite> prereq_list = new ArrayList<>();
@@ -151,21 +180,6 @@ public class RegTests {
         assertEquals(registration.registerStudentForCourse(mockStudent, mockCourse), RegistrationResult.COURSE_FULL);
     }
 
-
-    @Test
-    public void test_registerStudentForCourse_ScheduleConflict(){
-        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
-        when(mockCourse.getEnrollmentCap()).thenReturn(50);
-        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(50);
-        when(mockCourse.getWaitListCap()).thenReturn(50);
-        when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
-
-        when(mockReg.hasConflictWithStudentSchedule(mockCourse, mockStudent)).thenReturn(true);
-        //BRO THIS IS NOT DONE I CAN'T MAKE IT WORK
-        assertEquals(RegistrationResult.SCHEDULE_CONFLICT, registration.registerStudentForCourse(mockStudent, mockCourse));
-
-    }
-
     @Test
     public void test_registerStudentForCourse_PrereqNotMet() {
         when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
@@ -181,6 +195,44 @@ public class RegTests {
         assertEquals(RegistrationResult.PREREQUISITE_NOT_MET, registration.registerStudentForCourse(mockStudent, mockCourse));
 
     }
+
+    @Test
+    public void test_registerStudentForCourse_ScheduleConflict(){
+
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
+        when(mockCourse.getEnrollmentCap()).thenReturn(50);
+        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(20);
+        when(mockCourse.getWaitListCap()).thenReturn(50);
+        when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
+
+
+
+        assertEquals(RegistrationResult.SCHEDULE_CONFLICT, registration.registerStudentForCourse(mockStudent, mockCourse));
+
+    }
+
+    @Test
+    public void test_registerStudentForCourse_Enrolled(){
+        when(mockCourse.getEnrollmentCap()).thenReturn(50);
+        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(25);
+        when(mockCourse.getWaitListCap()).thenReturn(50);
+        when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
+
+        assertEquals(RegistrationResult.ENROLLED, registration.registerStudentForCourse(mockStudent, mockCourse));
+
+    }
+
+    @Test
+    public void test_registerStudentForCourse_Waitlist(){
+        when(mockCourse.getEnrollmentCap()).thenReturn(50);
+        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(50);
+        when(mockCourse.getWaitListCap()).thenReturn(50);
+        when(mockCourse.getCurrentWaitListSize()).thenReturn(10);
+
+        assertEquals(RegistrationResult.WAIT_LISTED, registration.registerStudentForCourse(mockStudent, mockCourse));
+
+    }
+
 
     @Test
     public void dropCourseException(){

@@ -51,6 +51,7 @@ public class RegistrationImpl implements Registration {
     @Override
     public boolean hasConflictWithStudentSchedule(Course course, Student student) {
         List<Course> schedule = coursecatalog.getCoursesEnrolledIn(student);
+        System.out.println("s: " + schedule);
         for(Course c : schedule) {
             if(areCoursesConflicted(c, course)) {
                 return true;
