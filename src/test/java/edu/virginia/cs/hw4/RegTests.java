@@ -165,7 +165,49 @@ public class RegTests {
     }
 
     @Test
-    public void dropCourse(){
-
+    public void dropCourseException(){
+        when(mockCourse.isStudentEnrolled(mockStudent)).thenReturn(false);
+        when(mockCourse.isStudentWaitListed(mockStudent)).thenReturn(false);
+        assertThrows(IllegalArgumentException.class, () -> registration.dropCourse(mockStudent,mockCourse));
+    }
+    @Test
+    public void dropCourseEmptyWaitList(){
+        when(mockCourse.isStudentEnrolled(mockStudent)).thenReturn(true);
+        when(mockCourse.isStudentWaitListed(mockStudent)).thenReturn(false);
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.WAIT_LIST);
+        when(mockCourse.isWaitListEmpty()).thenReturn(true);
+        registration.dropCourse(mockStudent,mockCourse);
+        verify(mockCourse).removeStudentFromEnrolled(mockStudent);
+        verify(mockCourse).setEnrollmentStatus(Course.EnrollmentStatus.OPEN);
+    }
+    @Test
+    public void dropCourseNotEmptyWaitList(){
+        when(mockCourse.isStudentEnrolled(mockStudent)).thenReturn(true);
+        when(mockCourse.isStudentWaitListed(mockStudent)).thenReturn(false);
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.WAIT_LIST);
+        when(mockCourse.isWaitListEmpty()).thenReturn(false);
+        registration.dropCourse(mockStudent,mockCourse);
+        verify(mockCourse).removeStudentFromEnrolled(mockStudent);
+        verify(mockCourse).addStudentToEnrolled(mockCourse.getFirstStudentOnWaitList());
+    }
+    @Test
+    public void dropCourseStatusClosed(){
+        when(mockCourse.isStudentEnrolled(mockStudent)).thenReturn(true);
+        when(mockCourse.isStudentWaitListed(mockStudent)).thenReturn(false);
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.CLOSED);
+        registration.dropCourse(mockStudent,mockCourse);
+        verify(mockCourse).removeStudentFromEnrolled(mockStudent);
+        verify(mockCourse).addStudentToEnrolled(mockCourse.getFirstStudentOnWaitList());
+        verify(mockCourse).setEnrollmentStatus(Course.EnrollmentStatus.WAIT_LIST);
+    }
+    @Test
+    public void dropCourseIsWaitlisted(){
+        when(mockCourse.isStudentEnrolled(mockStudent)).thenReturn(false);
+        when(mockCourse.isStudentWaitListed(mockStudent)).thenReturn(true);
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.CLOSED);
+        registration.dropCourse(mockStudent,mockCourse);
+        verify(mockCourse).removeStudentFromWaitList(mockStudent);
+        verify(mockCourse).setEnrollmentStatus(Course.EnrollmentStatus.WAIT_LIST);
     }
 }
+
