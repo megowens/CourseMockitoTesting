@@ -115,6 +115,8 @@ public class RegTests {
     @Test
     public void test_hasConflictWithStudentSchedule(){
 
+
+
     }
     Prerequisite prereq2 = new Prerequisite(mockCourse2, Grade.C);
     List<Prerequisite> prereq_list = new ArrayList<>();
@@ -159,8 +161,24 @@ public class RegTests {
         when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
 
         when(mockReg.hasConflictWithStudentSchedule(mockCourse, mockStudent)).thenReturn(true);
-
+        //BRO THIS IS NOT DONE I CAN'T MAKE IT WORK
         assertEquals(RegistrationResult.SCHEDULE_CONFLICT, registration.registerStudentForCourse(mockStudent, mockCourse));
+
+    }
+
+    @Test
+    public void test_registerStudentForCourse_PrereqNotMet() {
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
+        when(mockCourse.getEnrollmentCap()).thenReturn(50);
+        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(50);
+        when(mockCourse.getWaitListCap()).thenReturn(50);
+        when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
+
+        when(mockCourse.getPrerequisites()).thenReturn(testPreList);
+        when(mockStudent.meetsPrerequisite(prereq)).thenReturn(true);
+        when(mockStudent.meetsPrerequisite(prereq2)).thenReturn(false);
+
+        assertEquals(RegistrationResult.PREREQUISITE_NOT_MET, registration.registerStudentForCourse(mockStudent, mockCourse));
 
     }
 
