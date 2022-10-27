@@ -34,7 +34,6 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean areCoursesConflicted(Course first, Course second) {
-        //*******Fix to account for meeting days being a list*******//
         if (classOnSameDay(first, second)) {
             int firstStart = getCourseTime(first).get(0);
             int firstEnd = getCourseTime(first).get(1);
