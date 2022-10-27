@@ -21,7 +21,7 @@ public class Course {
     private int meetingDurationMinutes;  //i.e., if 75, class ends at 2:45p.m.
     private String meetingLocation; //i.e. GIL 301
 
-    private List<Student> enrolledStudents;
+    protected List<Student> enrolledStudents;
     private List<Student> waitListedStudents;
 
     private EnrollmentStatus enrollmentStatus;

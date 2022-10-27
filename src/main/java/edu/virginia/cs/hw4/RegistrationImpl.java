@@ -19,7 +19,10 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean isEnrollmentFull(Course course) {
-        return course.getEnrollmentCap() <= course.getCurrentEnrollmentSize();
+        if(course.getEnrollmentCap() <= course.getCurrentEnrollmentSize()){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -34,7 +37,6 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public boolean areCoursesConflicted(Course first, Course second) {
-        //*******Fix to account for meeting days being a list*******//
         if (classOnSameDay(first, second)) {
             int firstStart = getCourseTime(first).get(0);
             int firstEnd = getCourseTime(first).get(1);
@@ -88,7 +90,6 @@ public class RegistrationImpl implements Registration {
             }
             return RegistrationResult.WAIT_LISTED;
         }
-
         return null;
     }
 

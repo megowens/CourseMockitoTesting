@@ -12,7 +12,10 @@ import static org.mockito.Mockito.*;
 public class RegTests {
     private Course mockCourse, mockCourse2;
     private Student mockStudent;
+    private Student mockStudent2;
     private RegistrationImpl registration = new RegistrationImpl();
+    private Prerequisite prereq = new Prerequisite(mockCourse, Grade.C);
+    private Registration mockReg;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
@@ -20,6 +23,8 @@ public class RegTests {
         mockCourse = mock(Course.class);
         mockCourse2 = mock(Course.class);
         mockStudent = mock(Student.class);
+        mockStudent2 = mock(Student.class);
+        mockReg = mock(Registration.class);
     }
     @Test
     public void test_isEnrollmentFull(){
@@ -111,14 +116,54 @@ public class RegTests {
     public void test_hasConflictWithStudentSchedule(){
 
     }
+    Prerequisite prereq2 = new Prerequisite(mockCourse2, Grade.C);
+    List<Prerequisite> prereq_list = new ArrayList<>();
+    public List<Prerequisite> getPrereq_list(List<Prerequisite> plist) {
+        plist.add(prereq);
+        plist.add(prereq2);
+        return plist;
+    }
+    List<Prerequisite> testPreList = getPrereq_list(prereq_list);
     @Test
     public void test_hasStudentMeetsPrerequisites(){
-
+        when(mockStudent.meetsPrerequisite(prereq)).thenReturn(true);
+        when(mockStudent.meetsPrerequisite(prereq2)).thenReturn(true);
+        assertTrue(registration.hasStudentMeetsPrerequisites(mockStudent, testPreList));
     }
     @Test
-    public void test_registerStudentForCourse(){
+    public void test_registerStudentForCourse_courseClosed(){
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.CLOSED);
+        assertEquals(registration.registerStudentForCourse(mockStudent, mockCourse), RegistrationResult.COURSE_CLOSED);
+    }
+
+    @Test
+    public void test_registerStudentForCourse_courseFull(){
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
+
+        when(mockCourse.getEnrollmentCap()).thenReturn(100);
+        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(100);
+
+        when(mockCourse.getWaitListCap()).thenReturn(100);
+        when(mockCourse.getCurrentWaitListSize()).thenReturn(100);
+
+        assertEquals(registration.registerStudentForCourse(mockStudent, mockCourse), RegistrationResult.COURSE_FULL);
+    }
+
+
+    @Test
+    public void test_registerStudentForCourse_ScheduleConflict(){
+        when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
+        when(mockCourse.getEnrollmentCap()).thenReturn(50);
+        when(mockCourse.getCurrentEnrollmentSize()).thenReturn(50);
+        when(mockCourse.getWaitListCap()).thenReturn(50);
+        when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
+
+        when(mockReg.hasConflictWithStudentSchedule(mockCourse, mockStudent)).thenReturn(true);
+
+        assertEquals(RegistrationResult.SCHEDULE_CONFLICT, registration.registerStudentForCourse(mockStudent, mockCourse));
 
     }
+
     @Test
     public void dropCourse(){
 
