@@ -74,8 +74,8 @@ public class RegistrationImpl implements Registration {
     public RegistrationResult registerStudentForCourse(Student student, Course course) {
         if(course.getEnrollmentStatus() == Course.EnrollmentStatus.CLOSED) {return RegistrationResult.COURSE_CLOSED;}
         if(isEnrollmentFull(course) && isWaitListFull(course)) {return RegistrationResult.COURSE_FULL;}
-        if(!hasStudentMeetsPrerequisites(student, course.getPrerequisites())){return RegistrationResult.PREREQUISITE_NOT_MET;}
         if(hasConflictWithStudentSchedule(course, student)) {return RegistrationResult.SCHEDULE_CONFLICT;}
+        if(!hasStudentMeetsPrerequisites(student, course.getPrerequisites())){return RegistrationResult.PREREQUISITE_NOT_MET;}
 
         if(!isEnrollmentFull(course)) {
             course.addStudentToEnrolled(student);

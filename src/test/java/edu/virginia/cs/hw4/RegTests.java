@@ -115,34 +115,20 @@ public class RegTests {
         assertFalse(registration.areCoursesConflicted(mockCourse,mockCourse2));
     }
 
-    List<Course> exSchedule = new ArrayList<>();
-    public List<Course> getExSchedule(List<Course> courselist) {
-        courselist.add(mockCourse);
-        courselist.add(mockCourse2);
-        return courselist;
-    }
-    List<Course> testSchedule = getExSchedule(exSchedule);
-
     @Test
     public void test_hasConflictWithStudentSchedule(){
-       //answer was like don't need to test methods in registration, need to create objects that would conflict and feed them that info
-
-        //mock isn't propogating fully so like mockCourse isn't carried to the error causing function
-        //mock is like a box and getting an error bc we're asking for info it doesn't have
-
         registration.setCourseCatalog(mockCatalog);
-        when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(testSchedule);
-        mockCourse.setMeetingDays(List.of(DayOfWeek.MONDAY,DayOfWeek.TUESDAY));
-        mockCourse.setMeetingDays(List.of(DayOfWeek.TUESDAY));
+        when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(List.of(mockCourse2));
 
-        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY,DayOfWeek.TUESDAY));
         when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
-        when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
-        when(mockCourse.getMeetingDurationMinutes()).thenReturn(75);
-        when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
+        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
+
         when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
-        when(mockCourse2.getMeetingDurationMinutes()).thenReturn(75);
+        when(mockCourse2.getMeetingDurationMinutes()).thenReturn(50);
         when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
+        when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse.getMeetingDurationMinutes()).thenReturn(50);
+        when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
 
 
         assertTrue(registration.hasConflictWithStudentSchedule(mockCourse, mockStudent));
@@ -198,14 +184,24 @@ public class RegTests {
 
     @Test
     public void test_registerStudentForCourse_ScheduleConflict(){
-
         when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
         when(mockCourse.getEnrollmentCap()).thenReturn(50);
         when(mockCourse.getCurrentEnrollmentSize()).thenReturn(20);
         when(mockCourse.getWaitListCap()).thenReturn(50);
         when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
 
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(List.of(mockCourse2));
 
+        when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
+        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
+
+        when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse2.getMeetingDurationMinutes()).thenReturn(50);
+        when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
+        when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
+        when(mockCourse.getMeetingDurationMinutes()).thenReturn(50);
+        when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
 
         assertEquals(RegistrationResult.SCHEDULE_CONFLICT, registration.registerStudentForCourse(mockStudent, mockCourse));
 
