@@ -119,26 +119,17 @@ public class RegTests {
     public void test_hasConflictWithStudentSchedule(){
         registration.setCourseCatalog(mockCatalog);
         when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(List.of(mockCourse2));
-<<<<<<< HEAD
 
-        when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
-        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
-
-=======
         when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY));
         when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY));
->>>>>>> 787b6d1176ec2b61177e7b82dde240f9e41348a6
+
         when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
         when(mockCourse2.getMeetingDurationMinutes()).thenReturn(50);
         when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
         when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
         when(mockCourse.getMeetingDurationMinutes()).thenReturn(50);
         when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 787b6d1176ec2b61177e7b82dde240f9e41348a6
         assertTrue(registration.hasConflictWithStudentSchedule(mockCourse, mockStudent));
     }
     Prerequisite prereq2 = new Prerequisite(mockCourse2, Grade.C);
@@ -155,6 +146,7 @@ public class RegTests {
         when(mockStudent.meetsPrerequisite(prereq2)).thenReturn(true);
         assertTrue(registration.hasStudentMeetsPrerequisites(mockStudent, testPreList));
     }
+
     @Test
     public void test_registerStudentForCourseException(){
         assertThrows(IllegalArgumentException.class, () -> registration.registerStudentForCourse(mockStudent,mockCourse));
@@ -201,30 +193,19 @@ public class RegTests {
         when(mockCourse.getCurrentEnrollmentSize()).thenReturn(20);
         when(mockCourse.getWaitListCap()).thenReturn(50);
         when(mockCourse.getCurrentWaitListSize()).thenReturn(0);
-<<<<<<< HEAD
 
-        registration.setCourseCatalog(mockCatalog);
-        when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(List.of(mockCourse2));
-
-        when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
-        when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.TUESDAY));
-
-=======
         registration.setCourseCatalog(mockCatalog);
         when(mockCatalog.getCoursesEnrolledIn(mockStudent)).thenReturn(List.of(mockCourse2));
         when(mockCourse2.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY));
         when(mockCourse.getMeetingDays()).thenReturn(List.of(DayOfWeek.MONDAY));
->>>>>>> 787b6d1176ec2b61177e7b82dde240f9e41348a6
+
         when(mockCourse2.getMeetingStartTimeMinute()).thenReturn(0);
         when(mockCourse2.getMeetingDurationMinutes()).thenReturn(50);
         when(mockCourse2.getMeetingStartTimeHour()).thenReturn(12);
         when(mockCourse.getMeetingStartTimeMinute()).thenReturn(0);
         when(mockCourse.getMeetingDurationMinutes()).thenReturn(50);
         when(mockCourse.getMeetingStartTimeHour()).thenReturn(12);
-<<<<<<< HEAD
 
-=======
->>>>>>> 787b6d1176ec2b61177e7b82dde240f9e41348a6
         assertEquals(RegistrationResult.SCHEDULE_CONFLICT, registration.registerStudentForCourse(mockStudent, mockCourse));
 
     }
