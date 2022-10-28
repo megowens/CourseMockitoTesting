@@ -51,7 +51,6 @@ public class RegistrationImpl implements Registration {
     @Override
     public boolean hasConflictWithStudentSchedule(Course course, Student student) {
         List<Course> schedule = coursecatalog.getCoursesEnrolledIn(student);
-        System.out.println("s: " + schedule);
         for(Course c : schedule) {
             if(areCoursesConflicted(c, course)) {
                 return true;
@@ -72,6 +71,9 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public RegistrationResult registerStudentForCourse(Student student, Course course) {
+        if(!coursecatalog.getAllCourses().contains(course)){
+            throw new IllegalArgumentException(course + " is not on the course list");
+        }
         if(course.getEnrollmentStatus() == Course.EnrollmentStatus.CLOSED) {return RegistrationResult.COURSE_CLOSED;}
         if(isEnrollmentFull(course) && isWaitListFull(course)) {return RegistrationResult.COURSE_FULL;}
         if(!hasStudentMeetsPrerequisites(student, course.getPrerequisites())){return RegistrationResult.PREREQUISITE_NOT_MET;}
