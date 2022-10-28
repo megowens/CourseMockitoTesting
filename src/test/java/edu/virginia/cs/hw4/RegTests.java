@@ -149,12 +149,16 @@ public class RegTests {
     }
     @Test
     public void test_registerStudentForCourse_courseClosed(){
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getAllCourses()).thenReturn(List.of(mockCourse));
         when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.CLOSED);
         assertEquals(registration.registerStudentForCourse(mockStudent, mockCourse), RegistrationResult.COURSE_CLOSED);
     }
 
     @Test
     public void test_registerStudentForCourse_courseFull(){
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getAllCourses()).thenReturn(List.of(mockCourse));
         when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
 
         when(mockCourse.getEnrollmentCap()).thenReturn(100);
@@ -168,6 +172,8 @@ public class RegTests {
 
     @Test
     public void test_registerStudentForCourse_PrereqNotMet() {
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getAllCourses()).thenReturn(List.of(mockCourse));
         when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
         when(mockCourse.getEnrollmentCap()).thenReturn(50);
         when(mockCourse.getCurrentEnrollmentSize()).thenReturn(50);
@@ -184,6 +190,8 @@ public class RegTests {
 
     @Test
     public void test_registerStudentForCourse_ScheduleConflict(){
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getAllCourses()).thenReturn(List.of(mockCourse));
         when(mockCourse.getEnrollmentStatus()).thenReturn(Course.EnrollmentStatus.OPEN);
         when(mockCourse.getEnrollmentCap()).thenReturn(50);
         when(mockCourse.getCurrentEnrollmentSize()).thenReturn(20);
@@ -205,6 +213,8 @@ public class RegTests {
 
     @Test
     public void test_registerStudentForCourse_Enrolled(){
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getAllCourses()).thenReturn(List.of(mockCourse));
         when(mockCourse.getEnrollmentCap()).thenReturn(50);
         when(mockCourse.getCurrentEnrollmentSize()).thenReturn(25);
         when(mockCourse.getWaitListCap()).thenReturn(50);
@@ -216,6 +226,8 @@ public class RegTests {
 
     @Test
     public void test_registerStudentForCourse_Waitlist(){
+        registration.setCourseCatalog(mockCatalog);
+        when(mockCatalog.getAllCourses()).thenReturn(List.of(mockCourse));
         when(mockCourse.getEnrollmentCap()).thenReturn(50);
         when(mockCourse.getCurrentEnrollmentSize()).thenReturn(50);
         when(mockCourse.getWaitListCap()).thenReturn(50);
