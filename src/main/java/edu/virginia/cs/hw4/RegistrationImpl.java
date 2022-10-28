@@ -72,6 +72,9 @@ public class RegistrationImpl implements Registration {
 
     @Override
     public RegistrationResult registerStudentForCourse(Student student, Course course) {
+        if(!coursecatalog.getAllCourses().contains(course)){
+            throw new IllegalArgumentException(course + " is not on the course list");
+        }
         if(course.getEnrollmentStatus() == Course.EnrollmentStatus.CLOSED) {return RegistrationResult.COURSE_CLOSED;}
         if(isEnrollmentFull(course) && isWaitListFull(course)) {return RegistrationResult.COURSE_FULL;}
         if(hasConflictWithStudentSchedule(course, student)) {return RegistrationResult.SCHEDULE_CONFLICT;}
